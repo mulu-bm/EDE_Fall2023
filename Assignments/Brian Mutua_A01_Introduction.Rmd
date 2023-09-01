@@ -40,14 +40,17 @@ Enter answers to the questions just below the >Answer: prompt.
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
 > Answer: 
+My experiences with data analytics is limited to Excel-based models. I have no prior experiences with R and Git. 
 
 2. Are there any components of the course about which you feel confident?
 
 > Answer: 
+Yes. Despite minimal experience in R and Git, I have studied programming in the past hence feel confident about understanding the coding principles. 
 
 3. Are there any components of the course about which you feel apprehensive?
 
 > Answer: 
+No. There are no components I feel apprehensive about at the moment.
 
 
 ## 3) GitHub
@@ -55,6 +58,7 @@ Enter answers to the questions just below the >Answer: prompt.
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file, committed those changes, and pushed them to your GitHub account. 
 
 > Answer: 
+https://github.com/mulu-bm/EDE_Fall2023
 
 ## 4) Knitting
 When you have completed this document, click the `knit` button.This should produce a PDF copy of your markdown document. Submit this PDF to Sakai. 
