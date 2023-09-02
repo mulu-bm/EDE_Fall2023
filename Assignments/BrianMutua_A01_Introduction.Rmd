@@ -22,7 +22,7 @@ This exercise accompanies the introductory material in Environmental Data Analyt
 
 ### Install TinyTex
 Now, run this code cell the same way. This will install "tinytex" -- a helper app that allows you to knit your markdown documents into professional quality PDFs.
-```{r install tiny tex, eval=FALSE, include=FALSE}
+```{r install tiny tex, eval=FALSE, include=TRUE}
 #install tinytext
 tinytex::install_tinytex()
 ```
