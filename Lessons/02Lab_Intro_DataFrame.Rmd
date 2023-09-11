@@ -4,6 +4,8 @@ subtitle: "Environmental Data Analytics"
 author: "Luana Lima"
 date: "Fall 2023"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -32,6 +34,7 @@ Suppose you want just the column speed. How would you access that data?
 
 ```{r}
 cars$speed
+mtcars$cyl
 ```
 
 How would you store it on another object?
@@ -51,6 +54,7 @@ class(car_speed)
 
 #Option 2
 is.data.frame(car_speed)
+is.vector(car_speed)
 ```
 
 How could you make it a data frame?
@@ -94,7 +98,7 @@ How would you create a data frame?
 
 ```{r}
 #useful function data.frame()
-create_df <- data.frame("speed"=car_speed,"dist"=car_dist)
+create_df <- data.frame("speed of car"=car_speed,"distance of car"=car_dist)
 create_df
 ```
 
@@ -111,6 +115,10 @@ head(df) #show the first 6 rows of df
 
 #If you know the number of the column you want you can refer to that to access column
 df[,1]
+df[1,1]
+df[1:10,1] #slicing example
+df2 <- df$car_speed
+class(df2)
 
 #you could also use this notation to delete columns
 df <- df[,-2]
