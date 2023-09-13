@@ -1,6 +1,6 @@
 ---
 title: "Assignment 2: Coding Basics"
-author: "Student Name"
+author: "Brian Mulu Mutua"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -31,11 +31,18 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 4.  Insert comments in your code to describe what you are doing.
 
 ```{r basics 1}
-#1. 
+#1. Using sequence function assigned the name, 'thirty_sequence' to generate the set of numbers between 1 and 30, increasing by threes
 
-#2. 
+ten_number_sequence <- seq(1,30,3)
 
-#3. 
+#2. Computing the mean and median of the sequence 
+
+ten_number_sequence_mean <- mean(ten_number_sequence)
+ten_number_sequence_median <- median(ten_number_sequence)
+
+#3. Checking if mean of the sequence is greater than the median
+
+ten_number_sequence_mean > ten_number_sequence_median
 
 ```
 
@@ -50,21 +57,50 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 8.  Label the columns of your data frame with informative titles.
 
 ```{r basics 2}
+#5. Creating a series of vectors of student names, test scores, and pass/fail status
+
+install.packages("randomNames") #Installing package to generate random student names
+library(randomNames) #Loading the package to generate random student names
+student_names <- c(randomNames(4)) #Generating 4 random names and storing them in a vector of type character
+student_test_scores <- c(sample(0:100,4)) #Generating a sample of 4 numbers between 0 and 100 and storing them in a vector of type integer
+student_pass_status <- c() #Creating empty vector of type logical to store pass/fail status
+
+#Looping through the test scores that have been randomly generated to check if the student has passed or failed, and storing the result in the logical vector above
+passed_test <- function(test_scores){
+  for(each_score in test_scores){
+    student_pass_status <- c(student_pass_status,ifelse(each_score >= 50,TRUE,FALSE))
+  }
+  return(student_pass_status)
+}
+
+student_pass_status <- passed_test(student_test_scores)
+df_students_and_test_scores <- data.frame(student_names,student_test_scores,student_pass_status)
+print(df_students_and_test_scores)
 
 ```
 
 9.  QUESTION: How is this data frame different from a matrix?
 
-> Answer:
+> Answer: In a matrix, all columns must have the same mode and length. A data frame is more general than a matrix and consists of a list of vectors of equal length, which could have different modes. 
 
 10. Create a function with an if/else statement. Your function should take a **vector** of test scores and print (not return) whether a given test score is a passing grade of 50 or above (TRUE or FALSE). You will need to choose either the `if` and `else` statements or the `ifelse` statement. 
 
 11. Apply your function to the vector with test scores that you created in number 5.
 
 ```{r basics 3}
+#10. Creating a function with an if/else statement to check the vector of test scores and check if the given test score is a passing grade or not
+
+has_student_passed_test <- function(test_scores){
+  for(each_score in test_scores){
+    student_pass_status <- c(student_pass_status,ifelse(each_score >= 50,TRUE,FALSE))
+  }
+  print(test_scores)
+  print("Passing Grade", student_pass_status)
+}
+has_student_passed_test(student_test_scores)
 
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer:
+> Answer: If the student test score was greater or equal to 50, then the "TRUE" condition worked and if the value was less than 50, then the "FALSE" condition worked. 
