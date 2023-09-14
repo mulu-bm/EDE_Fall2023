@@ -5,6 +5,10 @@ output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
   chunk_output_type: console
+#Code snippet below added to YAML to enable text wrapping on the knitted pdf document. Adapted from a post from jng posted to stackoverflow.com on 09/05/2023 https://stackoverflow.com/questions/26210656/in-r-markdown-in-rstudio-how-can-i-prevent-the-source-code-from-running-off-a-p 
+header-includes:
+  \usepackage{fvextra}
+  \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,commandchars=\\\{\}}
 ---
 
 ## OVERVIEW
@@ -31,7 +35,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 4.  Insert comments in your code to describe what you are doing.
 
 ```{r basics 1}
-#1. Using sequence function assigned the name, 'thirty_sequence' to generate the set of numbers between 1 and 30, increasing by threes
+#1. Generate the set of numbers between Using seq function
 
 ten_number_sequence <- seq(1,30,3)
 
@@ -41,7 +45,7 @@ ten_number_sequence_mean <- mean(ten_number_sequence)
 ten_number_sequence_median <- median(ten_number_sequence)
 
 #3. Checking if mean of the sequence is greater than the median
-
+print("Is the mean greater than the median?:")
 ten_number_sequence_mean > ten_number_sequence_median
 
 ```
@@ -56,20 +60,19 @@ ten_number_sequence_mean > ten_number_sequence_median
 
 8.  Label the columns of your data frame with informative titles.
 
-#Approach 1 
 ```{r basics 2}
-#5&#6. Creating a  series of vectors of student names, test scores, and pass/fail status and labeling the vectors accordingly in the comments
+#5&#6. Creating a  series of vectors of student names, test scores, and pass/fail status
 
-student_names1 <- c("George Costanza", "Elaine Benes", "Jerry Seinfeld","Cosmo Kramer") #Vector of type character
+student_names <- c("George Costanza", "Elaine Benes", "Jerry Seinfeld","Cosmo Kramer") #Vector of type character
 student_test_scores <- c(45,70,30,60) #Vector of type integer
 student_pass_status <- c(FALSE,TRUE,FALSE,TRUE) #Vector of type logical
 
 #7. Combining each of the vectors in a data frame
-df_student_names_and_test_scores <- data.frame(student_names1,student_test_scores,student_pass_status) #Creating data frame of student names and test scores
+df_students_and_test_scores <- data.frame(student_names,student_test_scores,student_pass_status)
 
 #8. Labeling the columns of the data frame with informative titles
-colnames(df_student_names_and_test_scores) <- c("StudentName","StudentTestScore","HasStudentPassed")
-print(df_student_names_and_test_scores)
+colnames(df_students_and_test_scores) <- c("StudentName","StudentTestScore","HasStudentPassed")
+print(df_students_and_test_scores) #Printing out resulting data frame
 
 ```
 
@@ -85,16 +88,14 @@ print(df_student_names_and_test_scores)
 #10. Creating a function with an if/else statement to check the vector of test scores and check if the given test score is a passing grade or not
 
 has_student_passed_test <- function(test_scores){
-  for(each_score in test_scores){
-    pass_status <- c(student_pass_status,ifelse(each_score >= 50,TRUE,FALSE))
-  }
-  print(test_scores)
-  print(pass_status)
+  pass_status <- c(ifelse(test_scores >= 50,TRUE,FALSE)) #Checking if test score is sufficient for a passing grade
+  print(data.frame(test_scores,pass_status)) #Printing the results
 }
-has_student_passed_test(student_test_scores)
+
+has_student_passed_test(student_test_scores) #Applying function to vector containing test scores
 
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer: If the student test score was greater or equal to 50, then the "TRUE" condition worked and if the value was less than 50, then the "FALSE" condition worked. 
+> Answer: The 'ifelse' option worked but the 'if' and 'else' option did not. This is because the 'if' and 'else' option can only accept a condition that has a length of 1. Hence, attempting to pass a vector for the condition returned the error "*Error in if (test_scores >= 50) { : the condition has length > 1*". In contrast, the 'ifelse' option can accept a condition with a length > 1, hence including a vector in the condition worked.
