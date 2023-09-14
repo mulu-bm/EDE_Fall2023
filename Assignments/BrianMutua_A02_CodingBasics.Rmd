@@ -83,15 +83,16 @@ print(df_students_and_test_scores) #Printing out resulting data frame
 11. Apply your function to the vector with test scores that you created in number 5.
 
 ```{r basics 3}
-#10. Creating a function with an if/else statement to check the vector of test scores and check if the given test score is a passing grade or not
+#10. Creating a function with an if/else statement to check the vector of test scores and check if a given test score is a passing grade or not
 has_student_passed_test <- function(test_scores){
-  pass_status <- c(ifelse(test_scores >= 50,TRUE,FALSE)) #Checking if test score is sufficient for a passing grade
+  pass_status <- c(ifelse(test_scores >= 50,TRUE,FALSE)) #Checking if test scores are sufficient for a passing grade and storing the results in a vector
   print(data.frame(test_scores,pass_status)) #Printing the results
 }
-has_student_passed_test(student_test_scores) #Applying function to vector containing test scores
+#11. Applying function to vector containing test scores
+has_student_passed_test(student_test_scores)
 
 ```
 
 12. QUESTION: Which option of `if` and `else` vs. `ifelse` worked? Why?
 
-> Answer: The 'ifelse' option worked but the 'if' and 'else' option did not. This is because the 'if' and 'else' option can only accept a condition that has a length of 1. Hence, attempting to pass a vector for the condition returned the error "*Error in if (test_scores >= 50) { : the condition has length > 1*". In contrast, the 'ifelse' option can accept a condition with a length > 1, hence including a vector in the condition worked.
+> Answer: The 'ifelse' option worked but the 'if' and 'else' option did not. This is because the 'if' and 'else' option can only accept a condition that has a length of 1. Hence, attempting to pass a vector for the condition returned the error "*Error in if (test_scores >= 50) { : the condition has length > 1*". In contrast, the 'ifelse' option can accept a condition with a length > 1, hence passing a vector in the condition worked.
