@@ -35,12 +35,10 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 4.  Insert comments in your code to describe what you are doing.
 
 ```{r basics 1}
-#1. Generate the set of numbers between Using seq function
-
+#1. Generating the set of numbers from 1 to 30 using the seq function
 ten_number_sequence <- seq(1,30,3)
 
 #2. Computing the mean and median of the sequence 
-
 ten_number_sequence_mean <- mean(ten_number_sequence)
 ten_number_sequence_median <- median(ten_number_sequence)
 
@@ -86,12 +84,10 @@ print(df_students_and_test_scores) #Printing out resulting data frame
 
 ```{r basics 3}
 #10. Creating a function with an if/else statement to check the vector of test scores and check if the given test score is a passing grade or not
-
 has_student_passed_test <- function(test_scores){
   pass_status <- c(ifelse(test_scores >= 50,TRUE,FALSE)) #Checking if test score is sufficient for a passing grade
   print(data.frame(test_scores,pass_status)) #Printing the results
 }
-
 has_student_passed_test(student_test_scores) #Applying function to vector containing test scores
 
 ```
