@@ -37,10 +37,13 @@ This exercise accompanies the lessons in Environmental Data Analytics on coding 
 ```{r basics 1}
 #1. Generating the set of numbers from 1 to 30 using the seq function
 ten_number_sequence <- seq(1,30,3)
+print(ten_number_sequence)
 
 #2. Computing the mean and median of the sequence 
 ten_number_sequence_mean <- mean(ten_number_sequence)
+print(ten_number_sequence_mean)
 ten_number_sequence_median <- median(ten_number_sequence)
+print(ten_number_sequence_median)
 
 #3. Checking if mean of the sequence is greater than the median
 print("Is the mean greater than the median?:")
