@@ -95,11 +95,21 @@ Find a ten-day forecast of temperatures (Fahrenheit) for Durham, North Carolina.
 
 ```{r DataExercise-1a}
 
+ten_day_temp_high_forecast_f <- c(81,83,83,84,78,71,79,82,85,84)
+ten_day_temp_low_forecast_f <- c(55,56,58,60,61,63,63,64,64,63)
+
 ```
 
 Now, create two additional vectors that include the ten-day forecast for the high and low temperatures in Celsius. Use a function to create the two new vectors from your existing ones in Fahrenheit.
 
 ```{r DataExercise-1b}
+fahrenheit_to_celsius <- function(temp_in_fahrenheit){
+  return((temp_in_fahrenheit-32)*5/9)
+}
+
+ten_day_temp_high_forecast_c <- fahrenheit_to_celsius(ten_day_temp_high_forecast_f)
+
+ten_day_temp_low_forecast_c <- fahrenheit_to_celsius(ten_day_temp_low_forecast_f)
 
 ```
 
@@ -107,11 +117,17 @@ Combine your four vectors into a data frame and add informative column names.
 
 ```{r DataExercise-1c}
 
+df_ten_day_temp_forecast <- data.frame(ten_day_temp_high_forecast_f,ten_day_temp_high_forecast_c,ten_day_temp_low_forecast_f,ten_day_temp_low_forecast_c)
+colnames(df_ten_day_temp_forecast) <- c("Ten-Day Temp. High Forecast (F)","Ten-Day Temp. High Forecast (C)","Ten-Day Temp. Low Forecast (F)","Ten-Day Temp. Low Forecast (C)")
+
 ```
 
 Use the common functions `summary` and `sd` to obtain basic data summaries of the ten-day forecast. How would you call these functions differently for the entire data frame vs. a single column? Attempt to demonstrate both options below.
 
 ```{r DataExercise-1d}
+
+summary(df_ten_day_temp_forecast)
+sd(df_ten_day_temp_forecast$`Ten-Day Temp. High Forecast (F)`)
 
 ```
 
@@ -158,9 +174,9 @@ date_obj_today
 
 #Ex_3 - on your own...
 str_juneteenth <- "19 June 1865"
-#Since the format is month-day-year we will use function mdy()
-#date_juneteenth <- ()
-#date_juneteenth
+#Since the format is day-month-year we will use function mdy()
+date_juneteenth <- dmy(str_juneteenth)
+date_juneteenth
 ```
 
 ```{r DateExercise2}
