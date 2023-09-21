@@ -142,11 +142,15 @@ ggplot(Neonics) + geom_bar(aes(x=Endpoint)) + theme(axis.text.x = element_text(a
 12. Determine the class of collectDate. Is it a date? If not, change to a date and confirm the new class of the variable. Using the `unique` function, determine which dates litter was sampled in August 2018.
 
 ```{r}
+#Checking the class of collectDate
 class(Litter$collectDate)
+#Printing out a sample value to check format before changing class
 print(Litter$collectDate[1])
+#Changing the class of collectDate to the Date class using the lubridate package
 Litter$collectDate <- ymd(Litter$collectDate)
+#Confirming the new class of collectDate as Date
 class(Litter$collectDate)
-print(Litter$collectDate[1])
+#Determining dates that the litter was sampled in August 2018 using 'unique' function
 unique(Litter$collectDate)
 ```
 
@@ -157,7 +161,7 @@ unique(Litter$plotID)
 summary(Litter$plotID)
 ```
 
-> Answer:
+> Answer: The unique function only returns a vector with the unique values of the plot IDs which were sampled.This is different from the summary function, which for the same variable, returns not only the plot IDs but also the count of the frequency at which each plot represented by a plotID was sampled.
 
 14. Create a bar graph of functionalGroup counts. This shows you what type of litter is collected at the Niwot Ridge sites. Notice that litter types are fairly equally distributed across the Niwot Ridge sites.
 
@@ -168,14 +172,14 @@ ggplot(Litter) + geom_bar(aes(x=functionalGroup)) + theme(axis.text.x = element_
 15. Using `geom_boxplot` and `geom_violin`, create a boxplot and a violin plot of dryMass by functionalGroup.
 
 ```{r}
-ggplot(Litter) + geom_boxplot(aes(x=functionalGroup,y=dryMass))
-ggplot(Litter) + geom_violin(aes(x=functionalGroup,y=dryMass))
+ggplot(Litter) + geom_boxplot(aes(x=functionalGroup,y=dryMass)) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+ggplot(Litter) + geom_violin(aes(x=functionalGroup,y=dryMass)) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
 
 Why is the boxplot a more effective visualization option than the violin plot in this case?
 
-> Answer:
+> Answer: The boxplot is a more effective visualization in this case because the functionalGroup value of dryMass is more evenly distributed along the range of sampled values.
 
 What type(s) of litter tend to have the highest biomass at these sites?
 
-> Answer:
+> Answer: Based on the visualization, Needles tend to have the highest biomass at these sites.
