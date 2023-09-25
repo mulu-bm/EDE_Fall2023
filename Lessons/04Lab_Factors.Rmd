@@ -14,7 +14,7 @@ knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 library(tidyverse);library(lubridate); library(here)
 
 #Read in data, don't convert strings to factors
-sites <- read.csv(here('Data/Raw/NWIS_SiteFlowData_NE_Raw.csv'))
+sites <- read.csv(here('Data/Raw/NWIS_SiteFlowData_NE_RAW.csv'))
 dim(sites)
 
 #Convert date column to date object
@@ -114,6 +114,8 @@ levels(sites$dow)
 ggplot(sites,aes(x=dow)) +
   geom_bar() + 
   scale_x_discrete(drop=FALSE)
+
+
 ```
 
 ## An exercise for you: see if you can plot the number of samples recorded each month
