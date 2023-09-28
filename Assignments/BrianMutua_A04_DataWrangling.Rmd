@@ -56,11 +56,11 @@ OzoneNC2019 <- read.csv(file=here("Data/Raw/EPAair_O3_NC2019_raw.csv"), stringsA
 head(OzoneNC2019,c(3,2))
 #Importing PM2.5 dataset for North Carolina for 2018
 PM25NC2018 <- read.csv(file=here("Data/Raw/EPAair_PM25_NC2018_raw.csv"), stringsAsFactors = TRUE)
-#Displaying first 3 rows and first 2 columns of the 2018 Ozone dataframe to show successful import
+#Displaying first 3 rows and first 2 columns of the 2018 PM2.5 dataframe to show successful import
 head(PM25NC2018,c(3,2))
 #Importing PM2.5 dataset for North Carolina for 2019
 PM25NC2019 <- read.csv(file=here("Data/Raw/EPAair_PM25_NC2019_raw.csv"), stringsAsFactors = TRUE)
-#Displaying first 3 rows and first 2 columns of the 2019 Ozone dataframe to show successful import
+#Displaying first 3 rows and first 2 columns of the 2019 PM2.5 dataframe to show successful import
 head(PM25NC2019,c(3,2))
 
 #2 Using glimpse function to reveal dimensions, column names and dataset structure
@@ -82,28 +82,44 @@ glimpse(PM25NC2019)
 
 6. Save all four processed datasets in the Processed folder. Use the same file names as the raw files but replace "raw" with "processed".
 
-```{r}
-#3 Changing date columns into date objects using lubridate
+```{r processing}
+#3 Changing date columns into date objects using lubridate. From the dataset structure displayed earlier, we note that the dates are stored as factors before the conversion.
+
+#Converting the date column in OzoneNC2018
 OzoneNC2018$Date <- mdy(OzoneNC2018$Date)
 #Displaying class to demonstrate successful conversion
 class(OzoneNC2018$Date)
+
+#Converting the date column in OzoneNC2019
 OzoneNC2019$Date <- mdy(OzoneNC2019$Date)
 #Displaying class to demonstrate successful conversion
 class(OzoneNC2019$Date)
+
+#Converting the date column in PM25NC2018
 PM25NC2018$Date <- mdy(PM25NC2018$Date)
 #Displaying class to demonstrate successful conversion
 class(PM25NC2018$Date)
+
+#Converting the date column in PM25NC2019
 PM25NC2019$Date <- mdy(PM25NC2019$Date)
 #Displaying class to demonstrate successful conversion
 class(PM25NC2019$Date)
 
-#4 Selecting specified columns for each dataset
+#4 Selecting the specified columns for each dataset for further analysis
+
+#Selecting columns
 OzoneNC2018.data <- select(OzoneNC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 OzoneNC2019.data <- select(OzoneNC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 PM25NC2018.data <- select(PM25NC2018, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 PM25NC2019.data <- select(PM25NC2019, Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
-#5 Filling all cells in AQS_PARAMETER_DESC with PM2.5
+#Displaying the dimensions of the adjusted dataset to illustrate column selection
+dim(OzoneNC2018.data)
+dim(OzoneNC2019.data)
+dim(PM25NC2018.data)
+dim(PM25NC2019.data)
+
+#5 Filling all cells in AQS_PARAMETER_DESC with PM2.5 and using glimpse function to illustrate amendment of column values
 PM25NC2018.data <- mutate(PM25NC2018.data, AQS_PARAMETER_DESC = "PM2.5")
 glimpse(PM25NC2018.data$AQS_PARAMETER_DESC)
 PM25NC2019.data <- mutate(PM25NC2019.data, AQS_PARAMETER_DESC = "PM2.5")
@@ -137,19 +153,22 @@ write.csv(PM25NC2019.data, row.names = FALSE, file = here("Data/Processed/EPAair
 
 11. Save your processed dataset with the following file name: "EPAair_O3_PM25_NC1819_Processed.csv"
 
-```{r}
-#7 Combining the columns using rbind
+```{r wrangling}
+#7 Combining the datasets using rbind
 #Checking column names to confirm they are identical
 colnames(OzoneNC2018.data)
 colnames(OzoneNC2019.data)
 colnames(PM25NC2018.data)
 colnames(PM25NC2019.data)
+
 #Combining dataframes using rbind
-NCAirQuality20182019.data <- rbind(OzoneNC2018.data,OzoneNC2019.data,PM25NC2018.data,PM25NC2019.data)
-glimpse(NCAirQuality20182019.data)
+NCAirQuality1819.data <- rbind(OzoneNC2018.data,OzoneNC2019.data,PM25NC2018.data,PM25NC2019.data)
+#Displaying structure of adjusted dataset using the glimpse function to show combined dataset
+glimpse(NCAirQuality1819.data)
+
 
 #8 Wrangling the dataset using the pipe function
-NCAirQuality20182019.data <- NCAirQuality20182019.data %>% 
+NCAirQuality1819.data <- NCAirQuality1819.data %>% 
   filter(Site.Name %in% c("Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", "Clemmons Middle", "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", "Garinger High School", "Castle Hayne", "Pitt Agri. Center", "Bryson City", "Millbrook School")) %>% 
   group_by(Date,Site.Name,AQS_PARAMETER_DESC,COUNTY) %>% 
   summarise(meanAQI = mean(DAILY_AQI_VALUE),
@@ -157,17 +176,19 @@ NCAirQuality20182019.data <- NCAirQuality20182019.data %>%
             meanlong = mean(SITE_LONGITUDE)) %>% 
   mutate(Month = month(Date), Year = year(Date))
   
-glimpse(NCAirQuality20182019.data)
+#Displaying structure of adjusted dataset using the glimpse function to show wrangled dataset
+glimpse(NCAirQuality1819.data)
 
 #9 Spreading the dataset such that AQI values for ozone and PM2.5 are in separate columns
-NCAirQuality20182019.data <- pivot_wider(NCAirQuality20182019.data, names_from = AQS_PARAMETER_DESC, values_from = meanAQI)
-glimpse(NCAirQuality20182019.data)
+NCAirQuality1819.data <- pivot_wider(NCAirQuality1819.data, names_from = AQS_PARAMETER_DESC, values_from = meanAQI)
+#Displaying structure of adjusted dataset using the glimpse function to show spread dataset
+glimpse(NCAirQuality1819.data)
 
 #10 Calling up the dimensions of the newly processed dataset
-dim(NCAirQuality20182019.data)
+dim(NCAirQuality1819.data)
 
 #11 Saving the processed dataset
-write.csv(NCAirQuality20182019.data, row.names = FALSE, file = here("Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv"))
+write.csv(NCAirQuality1819.data, row.names = FALSE, file = here("Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv"))
 ```
 
 
@@ -177,21 +198,20 @@ write.csv(NCAirQuality20182019.data, row.names = FALSE, file = here("Data/Proces
 
 13. Call up the dimensions of the summary dataset.
 
-```{r}
+```{r summary}
 
 #12 Generating summary dataset
-NCAirQuality20182019.datasummary <- NCAirQuality20182019.data %>% 
+NCAirQuality1819.datasummary <- NCAirQuality1819.data %>% 
   group_by(Site.Name,Month,Year) %>% 
   summarise(meanOzone = mean(Ozone), meanPM25 = mean(PM2.5)) %>% 
   drop_na(meanOzone)
-glimpse(NCAirQuality20182019.datasummary)
+glimpse(NCAirQuality1819.datasummary)
 
 #13 Calling up the dimensions of the summary dataset
-dim(NCAirQuality20182019.datasummary)
-
+dim(NCAirQuality1819.datasummary)
 
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 'drop_na' allows us to remove only the rows where the values in the mean ozone column are missing whereas 'na.omit' would omit all rows where a value is missing in any of the columns.
+> Answer: 'drop_na' allows us to remove only the rows where the values in the specified column of mean ozone AQI values are missing, whereas 'na.omit' would omit all rows where a value is missing in any of the columns in the dataframe. Hence, if we used 'na_omit' on our dataframe, all rows that had missing values including the missing mean PM2.5 AQI values would also be removed. This would not be appropriate for our case above where we **only** sought to remove rows where mean ozone AQI values were not available.
