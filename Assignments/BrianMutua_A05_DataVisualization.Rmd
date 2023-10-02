@@ -1,6 +1,6 @@
 ---
 title: "Assignment 5: Data Visualization"
-author: "Student Name"
+author: "Brian Mulu Mutua"
 date: "Fall 2023"
 output: pdf_document
 geometry: margin=2.54cm
@@ -31,9 +31,34 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 2. Make sure R is reading dates as date format; if not change the format to date.
 
 ```{r initialize project}
-#1 
+#1 Initial setup
+#Checking working directory 
+getwd()
 
-#2 
+#Loading necessary libraries
+library(tidyverse)
+library(lubridate)
+library(here)
+library(cowplot)
+
+#Reading processed data files
+processedNTL.LTER.data <- read.csv(here("Data/Processed_KEY/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"))
+processedNiwot.Ridge.data <- read.csv(here("Data/Processed_KEY/NEON_NIWO_Litter_mass_trap_Processed.csv"))
+
+#2 Making sure R is reading dates as date format
+#Checking date format of the loaded data for the North Temperate Lakes LTER Data
+glimpse(processedNTL.LTER.data)
+#Adjusting date format using lubridate
+processedNTL.LTER.data$sampledate <- ymd(processedNTL.LTER.data$sampledate)
+#Using class function to show that date format has been updated successfully
+class(processedNTL.LTER.data$sampledate)
+
+
+#Checking date format of the loaded data for the Niwot Ridge Long-Term Ecological Research (LTER) station
+glimpse(processedNiwot.Ridge.data)
+processedNiwot.Ridge.data$collectDate <- ymd(processedNiwot.Ridge.data$collectDate)
+#Using class function to show that date format has been updated successfully
+class(processedNiwot.Ridge.data$collectDate)
 
 ```
 ## Define your theme
@@ -45,8 +70,40 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
  * Legend
 
 ```{r build plot theme}
-#3
+#3 Building personal theme
+brian_theme_A05 <- theme_base()  + 
+  theme(
+    line =  element_line(colour = "indianred"),
+    #rect =              element_rect(),
+    #text =              element_text(),
+    
+    # Modified inheritance structure of text element
+    plot.title = element_text(family = "Helvetica-Narrow",
+                              face = "bold",
+                              size = 20),
+    axis.title.x = element_text(family="Helvetica-Narrow"),
+    axis.title.y = element_text(family="Helvetica-Narrow"),
+    axis.text = element_text(family="Helvetica-Narrow"),
+    
+    # Modified inheritance structure of line element
+    axis.ticks = element_line(colour = "indianred",linewidth = 0.5),
+    #panel.grid.major =  element_line(),
+    #panel.grid.minor =  element_blank(),
+    
+    # Modified inheritance structure of rect element
+    plot.background = element_rect(colour = "bisque1"),
+    #panel.background =  element_rect(),
+    #legend.key =        element_rect(),
+    
+    # Modifiying legend.position
+    legend.position = "bottom",
+    legend.background = element_rect(color = "bisque3")
+    
+    #complete = TRUE
+    )
 
+#Setting personal theme as default theme
+theme_set(brian_theme_A05)
 ```
 
 ## Create graphs
@@ -55,7 +112,10 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 4. [NTL-LTER] Plot total phosphorus (`tp_ug`) by phosphate (`po4`), with separate aesthetics for Peter and Paul lakes. Add a line of best fit and color it black. Adjust your axes to hide extreme values (hint: change the limits using `xlim()` and/or `ylim()`).
 
 ```{r plot total P vs PO4}
-#4 
+#4 Setting up plot
+NTL.LTER.Question4Plot <- processedNTL.LTER.data %>% 
+  ggplot(aes(x=tp_ug,y=po4,color=lakename)) + geom_point() + xlim(0,150) + ylim(0,50) + geom_smooth(method=lm) + brian_theme_A05
+NTL.LTER.Question4Plot
 
 ```
 
