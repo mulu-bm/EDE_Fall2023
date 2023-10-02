@@ -47,6 +47,8 @@ ggplot(data=data.frame(x=0,y=0))+
     x=0,
     y=0.025,
     label=expression(paste("Mean is ", mu,",", R^{2},'=0.6'))
+    #expression() is used here since there are nested formulas.
+    #If there are no nested formulas, we can just use paste().
     )
 
 #Print the plot
@@ -93,19 +95,23 @@ Say we want to plot the number of records each month in the Peter/Paul lakes dat
 
 ```{r Plot the number of records by month}
 #What kind of values are months?
-
+class(PeterPaul.chem.nutrients$month)
 #List unique values
-
+unique(PeterPaul.chem.nutrients$month)
 #Plot how many Lake observations occur each month
-
+ggplot(PeterPaul.chem.nutrients,aes(x=month))+geom_bar()
 #Convert month to a factor -- with 12 levels, labelled with month names
-
+factor(PeterPaul.chem.nutrients$month,levels = 1:12,labels = month.abb)
 #Try again: Plot how many Lake observations occur each month
-
+ggplot(PeterPaul.chem.nutrients,aes(x=factor(PeterPaul.chem.nutrients$month,levels = 1:12,labels = month.abb)))+geom_bar()
 #Alter to include missing months
-
+ggplot(PeterPaul.chem.nutrients,aes(x=factor(PeterPaul.chem.nutrients$month,levels = 1:12,labels = month.abb)))+geom_bar()+scale_x_discrete(name="month",drop=FALSE)
 #Tidy up the code
-
+ggplot(PeterPaul.chem.nutrients,
+       aes(x=factor(PeterPaul.chem.nutrients$month,
+                    levels = 1:12,
+                    labels = month.abb))
+       )+geom_bar()+scale_x_discrete(name="month",drop=FALSE)
 ```
 
 
@@ -228,6 +234,11 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Plot surface temperatures by day of  year. 
 # Color your points by year, and facet by lake in two rows.
 # Change the ylab name
+library(dplyr)
+SurfaceTemperaturePlot_Task1 <- PeterPaul.chem.nutrients %>% filter(depth==0) %>% 
+ggplot(mapping=aes(x=daynum,y=temperature_C,color=year4)) + geom_point()+facet_wrap(vars(lakename))+labs(y="Surface Temperature")
+
+SurfaceTemperaturePlot_Task1
 
 
 #2. 
@@ -235,7 +246,10 @@ Exercise: build your own scatterplots of PeterPaul.chem.nutrients
 # Change the size of your point to 0.5
 # Change the color palette to magma and play with direction (+- 1), which one makes more sense?
 # Change x axis to include marker/labels every 5 years
+SurfaceTemperaturePlot_Task2 <- PeterPaul.chem.nutrients %>% 
+ggplot(mapping=aes(x=sampledate,y=temperature_C,color=depth)) + geom_point(size=0.5)+labs(y="Surface Temperature")+scale_color_viridis(option = "magma", direction = -1)+scale_x_date(date_breaks = "5 years",date_labels = "%Y")
 
+SurfaceTemperaturePlot_Task2
 
 
 ```
@@ -250,7 +264,10 @@ Exercise: Plot relationships between air quality measurements
 # Make the points 50 % transparent
 # Add a line of best fit for the linear regression of these variables.
 
+AQIPlot_Task3 <- EPAair %>% 
+ggplot(mapping=aes(x=PM2.5,y=Ozone,color=mean_Lat)) + geom_point(alpha=0.5)+scale_color_viridis(name="Latitude",option="viridis",direction = -1)+geom_smooth(method="lm")
 
+AQIPlot_Task3
 
 
 ```
