@@ -52,18 +52,17 @@ processedNiwot.Ridge.data <- read.csv(here("Data/Processed_KEY/NEON_NIWO_Litter_
 
 #2 Making sure R is reading dates as date format
 #Checking date format of the loaded data for the North Temperate Lakes LTER Data
-glimpse(processedNTL.LTER.data)
+glimpse(processedNTL.LTER.data$sampledate)
 #Adjusting date format using lubridate
 processedNTL.LTER.data$sampledate <- ymd(processedNTL.LTER.data$sampledate)
 #Using class function to show that date format has been updated successfully
-class(processedNTL.LTER.data$sampledate)
-
+glimpse(processedNTL.LTER.data$sampledate)
 
 #Checking date format of the loaded data for the Niwot Ridge Long-Term Ecological Research (LTER) station
-glimpse(processedNiwot.Ridge.data)
+glimpse(processedNiwot.Ridge.data$collectDate)
 processedNiwot.Ridge.data$collectDate <- ymd(processedNiwot.Ridge.data$collectDate)
-#Using class function to show that date format has been updated successfully
-class(processedNiwot.Ridge.data$collectDate)
+#Using glimpse function to show that date format has been updated successfully
+glimpse(processedNiwot.Ridge.data$collectDate)
 
 ```
 ## Define your theme
@@ -78,35 +77,46 @@ class(processedNiwot.Ridge.data$collectDate)
 #3 Building personal theme
 brian_theme_A05 <- theme_base()  + 
   theme(
+    #Modifying colour and size of elements
     line =  element_line(colour = "grey10"),
-    rect =  element_rect(colour = "grey10", fill = "Honeydew"),
-    text =  element_text(colour = "grey10",size = 12),
+    rect =  element_rect(colour = "grey10",
+                         fill = "Honeydew"),
+    text =  element_text(colour = "grey10",size = 11),
     
-    # Modified inheritance structure of text element
-    plot.title = element_text(family = "Helvetica",
+    #Modifying plot and axis titles
+    plot.title = element_text(family = "sans",
                               face = "bold",
-                              size = 20,colour = "grey10"),
-    axis.title.x = element_text(family="Helvetica",size = 12,colour = "grey10",face = "bold"),
-    axis.title.y = element_text(family="Helvetica",size = 12,colour = "grey10",face = "bold"),
-    axis.text = element_text(family="Helvetica",size = 12,colour = "grey10"),
+                              size = 16,colour = "grey10"),
+    axis.title.x = element_text(family="sans",
+                                size = 11,
+                                colour = "grey10",
+                                face = "bold"),
+    axis.title.y = element_text(family="sans",
+                                size = 11,
+                                colour = "grey10",
+                                face = "bold"),
+    axis.text = element_text(family="sans",
+                             size = 11,
+                             colour = "grey10"),
     
-    # Modified inheritance structure of line element
-    axis.ticks = element_blank(),
+    #Modifying grid line, axis ticks and plot margin
+    axis.ticks =element_blank(),
     panel.grid.major =  element_line(colour = "grey80"),
     panel.grid.minor =  element_blank(),
     panel.border = element_rect(colour = "grey80"),
-    
-    # Modified inheritance structure of rect element
-    plot.background = element_rect(fill = "Honeydew",colour = NA),
-    panel.background =  element_rect(fill = "Honeydew",colour = "grey80"),
+
+    #Modifying bacjground colour
+    plot.background = element_rect(fill = "Honeydew",
+                                   colour = NA),
+    panel.background =  element_rect(fill = "Honeydew",
+                                     colour = "grey80"),
     legend.key =  element_rect(fill="Honeydew"),
     
-    # Modifiying legend.position
+    #Modifying legend
     legend.position = "bottom",
     legend.background = element_rect(colour = "grey10"),
-    legend.text = element_text(colour = "grey10")
-    
-    #complete = TRUE
+    legend.text = element_text(colour = "grey10", 
+                               size = 11)
     )
 
 #Setting personal theme as default theme
@@ -121,7 +131,14 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 ```{r plot total P vs PO4}
 #4 Setting up plot
 NTL.LTER.Question4Plot <- processedNTL.LTER.data %>% 
-  ggplot(aes(x=po4,y=tp_ug,color=lakename)) + geom_point() + xlim(0,50) + ylim(0,150) + geom_smooth(method=lm, color="black")
+  ggplot(aes(x=po4,y=tp_ug,color=lakename)) + 
+  geom_point() + xlim(0,50) + ylim(0,150) + 
+  geom_smooth(method=lm, 
+              color="black")+
+  labs(y = "Total Phosphorous (\u00B5g)", 
+       x = "Phosphate", 
+       colour = "Lake Name",
+       title = "Total Phosphorous vs Phosphate")
 
 #Printing out plot
 NTL.LTER.Question4Plot
@@ -137,41 +154,80 @@ Tip:
 
 ```{r Create boxplots}
 #5 Setting up the boxplots
-#Checking how month variables are strored
-class(processedNTL.LTER.data$month)
-#Since month is stored as an integer, it needs to be converted to a factor to probably plot the months on the x axis. This is done in the respective pipes for the different visualisations outlined below.
+#Checking how month variables are stored
+glimpse(processedNTL.LTER.data$month)
+
+#Since month is stored as an integer, it needs to be converted to a factor to probably plot the months on the x axis. This is done in the respective pipes for the different visualizations outlined below.
 
 #Setting up boxplots of temperatures in the different months of the year
 temperatureBoxplot.NTL.LTER <- processedNTL.LTER.data %>% 
-  ggplot(aes(x=factor(month,levels=1:12,labels=month.abb),y=temperature_C,color=lakename))+geom_boxplot()+scale_x_discrete(name="month",drop=FALSE)+labs(y="Temperature (\u00B0C)")
+  ggplot(aes(x=factor(month, levels=1:12, labels=month.abb),
+             y=temperature_C,
+             color=lakename))+
+  geom_boxplot()+
+  scale_x_discrete(name="Month",
+                   drop=FALSE)+
+  labs(y="Temperature (\u00B0C)",
+       title = "Temperature (\u00B0C) by Month")
 
-#Displaying temperature boxplot
+#Displaying temperature box plot
 temperatureBoxplot.NTL.LTER
 
-#Setting up boxplots of TP in the different months of the year
-TPBoxplot.NTL.LTER <- processedNTL.LTER.data %>% 
-  ggplot(aes(x=factor(month,levels=1:12,labels=month.abb),y=tp_ug,color=lakename))+geom_boxplot()+scale_x_discrete(name="month",drop=FALSE)+labs(y="Total P")
+#Setting up box plots of TP in the different months of the year
+TotalPBoxplot.NTL.LTER <- processedNTL.LTER.data %>% 
+  ggplot(aes(x=factor(month,levels=1:12,labels=month.abb)
+             ,y=tp_ug,color=lakename))+
+  geom_boxplot()+
+  scale_x_discrete(name="Month",drop=FALSE)+
+  labs(y="Total P (\u00B5g)",
+       colour = "Lake Name",
+       title = "Total P (\u00B5g) by Month")
 
-#Displaying temperature boxplot
-TPBoxplot.NTL.LTER
+#Displaying total P box plot
+TotalPBoxplot.NTL.LTER
 
-#Setting up boxplots of TN in the different months of the year
-TNBoxplot.NTL.LTER <- processedNTL.LTER.data %>% 
-  ggplot(aes(x=factor(month,levels=1:12,labels=month.abb),y=tn_ug,color=lakename))+geom_boxplot()+scale_x_discrete(name="month",drop=FALSE)+labs(y="Total N")
+#Setting up box plots of TN in the different months of the year
+TotalNBoxplot.NTL.LTER <- processedNTL.LTER.data %>% 
+  ggplot(aes(x=factor(month,levels=1:12,labels=month.abb),
+             y=tn_ug,color=lakename))+
+  geom_boxplot()+
+  scale_x_discrete(name="Month",drop=FALSE)+
+  labs(y="Total N (\u00B5g)",
+       colour = "Lake Name", 
+       title = "Total N (\u00B5g) by Month")
 
-#Displaying temperature boxplot
-TNBoxplot.NTL.LTER
+#Displaying total N box plot
+TotalNBoxplot.NTL.LTER
 
-#Consolidating the 3 boxplots created above
-plot_grid(temperatureBoxplot.NTL.LTER+theme(legend.position ="none",axis.title.x = element_blank()),TPBoxplot.NTL.LTER+theme(legend.position ="none",axis.title.x = element_blank()),TNBoxplot.NTL.LTER+theme(legend.position ="none"),nrow = 3,align = "hv")
+#Consolidating the 3 boxplots created above in one cowplot
+cowplotWithoutLegend <- plot_grid(temperatureBoxplot.NTL.LTER+
+            theme(legend.position ="none",
+                  axis.title.x = element_blank(),
+                  plot.title = element_blank()),
+          TotalPBoxplot.NTL.LTER+
+            theme(legend.position ="none",
+                  axis.title.x = element_blank(),
+                  plot.title = element_blank()),
+          TotalNBoxplot.NTL.LTER+
+            theme(legend.position ="none",
+                  plot.title = element_blank()),
+          nrow = 3,
+          align = "hv")
+
+#Storing legend separately to be added to consolidated cowplot
+cowplotlegend <- get_legend(temperatureBoxplot.NTL.LTER+
+                              guides(colour=guide_legend(nrow=1))+
+                              theme(legend.position = "bottom"))
+#Plotting consolidated boxplots with legend
+plot_grid(cowplotWithoutLegend, cowplotlegend, ncol = 1, rel_heights = c(1,.05))
 
 ```
 
 Question: What do you observe about the variables of interest over seasons and between lakes? 
 
 > Answer: From the boxplots, we observe the following concerning the variables:
-1. The median temperature in both lakes rises between the months of May and August then drops down in the months of October and November. The temperature distributions in the months of May to July are also positively skewed and the temperatures in both lakes fall within a similar range.
-2. Total P and N values are fairly concentrated with several outliers.
+1. The median measured temperature in both lakes varies seasonally and is highest in the months of August and September. The median temperature rises in the summer months between May and August then decereases in the months of October and November. The range of temperatures measured is also lower in the months of October and November compared to the preceding months. The temperature distributions in both lakes are similarly skewed and fall within a similar range.
+2. Total P and N values are fairly concentrated with **several outliers**.The Total P and Total N values for Peter Lake are more widely distributed than those of Paul Lake.
 
 6. [Niwot Ridge] Plot a subset of the litter dataset by displaying only the "Needles" functional group. Plot the dry mass of needle litter by date and separate by NLCD class with a color aesthetic. (no need to adjust the name of each land use)
 
@@ -181,18 +237,34 @@ Question: What do you observe about the variables of interest over seasons and b
 #6 Plotting a subset of the litter dataset displaying only the "Needles" functional group
 NiwotRideDryMassbyDate.plot <- processedNiwot.Ridge.data %>% 
   filter(functionalGroup=="Needles") %>% 
-  ggplot(aes(x=collectDate,y=dryMass,color=nlcdClass)) + geom_point()
+  ggplot(aes(x=collectDate,
+             y=dryMass,
+             color=nlcdClass)) +
+  geom_point() +
+  labs(y = "Dry Mass (g)",
+       x = "Year",
+       colour = "NLCD classes",
+       title = "Dry Mass by Year")
 NiwotRideDryMassbyDate.plot
 
 
 #7 Plotting the same data separated into facets
 NiwotRideDryMassbyDate.facetedplot <- processedNiwot.Ridge.data %>% 
   filter(functionalGroup=="Needles") %>% 
-  ggplot(aes(x=collectDate,y=dryMass,color=nlcdClass)) + geom_point() + facet_wrap(vars(nlcdClass),nrow = 1) + theme(legend.position = "bottom")
+  ggplot(aes(x=collectDate,
+             y=dryMass,
+             color=nlcdClass)) + 
+  geom_point() + 
+  facet_wrap(vars(nlcdClass),nrow = 1) + 
+  theme(legend.position = "bottom") +
+  labs(y = "Dry Mass (g)",
+       x = "Year",
+       colour = "NLCD classes",
+       title = "Dry Mass by Year")
 NiwotRideDryMassbyDate.facetedplot
 
 
 ```
 Question: Which of these plots (6 vs. 7) do you think is more effective, and why? 
 
-> Answer: Plot 7 is more effective than Plot 6 as one can more easily infer the patterns in dryMass for the different nlcd classes.
+> Answer: Plot 7 is more effective than Plot 6. This is because it is easier to observe the patterns of dryMass data for the different nlcd classes when the data is separated into facets than when all points are consolidated in one view. It is also easier to visually compare the differences in dryMass between the NLCD classes in different years.
