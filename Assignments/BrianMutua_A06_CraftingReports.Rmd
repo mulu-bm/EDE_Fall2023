@@ -1,8 +1,9 @@
 ---
 title: 'A06 - Crafting Reports'
-author: "Student Name" 
+author: "Brian Mulu Mutua" 
 date: "Fall 2023"
 output: pdf_document
+toc: true
 ---
 
 ## Objectives:
@@ -34,7 +35,7 @@ Table: EPA Air Quality
 
 Set the following R code chunk so that it runs when knit, but no messages, errors, or any output is shown. The code itself, however, should be displayed.
 
-```{r project.setup}
+```{r project.setup, message=FALSE, warning=FALSE}
 #Import libraries
 library(tidyverse);library(lubridate);library(here);library(knitr)
 
@@ -77,7 +78,8 @@ summary_Ozone <- epa_data %>%
   arrange(mean_Ozone)
 
 #Use the `kable` function to produce the 2 tables in markdown format
-
+knitr::kable(summary_PM25,caption = "Mean Particulates (2.5mm)")
+knitr::kable(summary_Ozone,caption = "Mean Ozone")
 ```
 
 ---
