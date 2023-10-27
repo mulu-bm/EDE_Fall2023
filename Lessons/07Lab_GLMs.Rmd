@@ -49,6 +49,37 @@ Create three plots, each with appropriately formatted axes and legends. Choose a
 ```{r}
 #Exercise 1:
 
+ozoneByYear <- EPAair %>% 
+  ggplot(aes(x=Ozone,fill=as.factor(Year)))+
+  geom_density(alpha=0.5)+
+  scale_fill_manual(values = c("darkgreen","darkblue"))+
+  labs(x="Ozone AQI value", y="Density",fill="")
+
+print(ozoneByYear)
+
+ozoneByYearBoxplot <- ggplot(EPAair,aes(y=Ozone,x=as.factor(Year)))+
+  geom_boxplot()+
+  stat_summary(geom = "text",
+               fun=max,
+               vjust=-1,
+               size=4,
+               label=c("b","a"))+
+  labs(y="Ozone AQI value",x="")+
+  ylim(0,150)
+
+print(ozoneByYearBoxplot)
+
+ozoneByYearViolin <- ggplot(EPAair,aes(y=Ozone,x=as.factor(Year)))+
+  geom_violin(draw_quantiles = 0.5)+
+  stat_summary(geom = "text",
+               fun=max,
+               vjust=-1,
+               size=4,
+               label=c("b","a"))+
+  labs(y="Ozone AQI value",x="")+
+  ylim(0,150)
+
+print(ozoneByYearViolin)
 
 ```
 
@@ -61,11 +92,18 @@ For the NTL-LTER dataset, can we predict PM2.5 from Ozone?
 ```{r}
 
 #Exercise 2: Run a linear regression PM2.5 by Ozone. Find the p-value and R-squared value. 
-
+EPAir.regression <- lm(
+  data = EPAair,
+  PM2.5 ~ Ozone)
+summary(EPAir.regression)
 
 
 #Exercise 3: Build a scatterplot. Add a line and standard error for the linear regression. Add the regression equation to the plot
-
+PM2point5byOzone <- 
+  ggplot(EPAair, aes(x = Ozone, y = PM2.5)) +
+  geom_smooth(method = "lm",col="blue") +
+  geom_point() 
+print(PM2point5byOzone) 
 
 
 ```
@@ -78,7 +116,16 @@ What other variables can we add to improve model?
 ```{r}
 
 #Exercise 4: Build correlation plots and identify more possible explanatory variables to add to the regression.
+library(corrplot)
+library(dplyr)
+EPAair.subset <-
+  EPAair %>% 
+  select(mean_Lat:Ozone) %>% 
+  na.omit()
 
+EPAairCorr <- cor(EPAair.subset)
+corrplot(EPAairCorr,method="ellipse")
+corrplot.mixed(EPAairCorr,upper="ellipse")
 
 
 
@@ -88,6 +135,7 @@ What other variables can we add to improve model?
 
 
 #Exercise 6: Run another regression using the variables selected on Exercise 6. Compare r-squared value with the one from Exercise 2. 
+OzoneBest.regression <- lm(data = EPAair.subset, PM2.5 ~ Ozone + Month + mean_Lng + mean_Lat)
 
 ```
 
