@@ -131,7 +131,7 @@ plot.GaringerOzone <- GaringerOzone %>%
   geom_smooth(method=lm) +
   labs(x="Date",
        y="Daily Max. 8 hr Ozone Concentration (ppm)",
-       title="Daily Max 8 hr Ozone Concentration (ppm) by time")
+       title="Daily Max 8 hr Ozone Concentration (ppm) over time")
 
 print(plot.GaringerOzone)
 
@@ -235,8 +235,8 @@ Ozone.monthly.data.plot <- GaringerOzone.monthly %>%
   geom_point() +
   geom_line() +
   labs(x = "Date",
-  y = "Mean monthly ozone concentrations (ppm)",
-  title = "Mean monthly ozone concentrations over time") +
+  y = "Mean Monthly Ozone Concentration (ppm)",
+  title = "Mean Monthly Ozone Concentration (ppm) over time") +
   geom_smooth(method = lm)
 print(Ozone.monthly.data.plot)
 
