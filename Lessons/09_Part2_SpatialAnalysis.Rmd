@@ -60,7 +60,7 @@ First, we'll read in our EPA air quality sites, as we did in the previous exerci
 
 ```{r convert.tabular.data.to.sf.object}
 #Read our EPA points into a spatial dataframe
-epa_pm25_sites_sf <- read_csv(here('Data/Raw/EPAair_PM25_NC2018_raw.csv')) %>% 
+epa_pm25_sites_sf <- read_csv(here('EDE_Fall2023/Data/Raw/EPAair_PM25_NC2018_raw.csv')) %>% 
   group_by(`Site Name`, COUNTY, SITE_LATITUDE, SITE_LONGITUDE) %>% 
   summarize(
     meanPM = mean(`Daily Mean PM2.5 Concentration`,na.rm=T),
@@ -89,7 +89,7 @@ Below we read in the USA counties shapefile, filtering for just the NC features 
 
 ```{r read.filtered.records.from.shapefile.to.sf.object}
 #
-counties_sf<- st_read(here('Data/Spatial/cb_2018_us_county_20m.shp')) %>% 
+counties_sf<- st_read(here('EDE_Fall2023/Data/Spatial/cb_2018_us_county_20m.shp')) %>% 
   filter(STATEFP == 37) #Filter for just NC Counties
 
 #
@@ -118,21 +118,23 @@ mapView(counties_sf, zcol = "AWATER")
 
 ```{r read HUCs shapefile}
 #Read the shapefile into an sf dataframe named "huc8_sf"
-
+huc8_sf<- st_read(here('EDE_Fall2023/Data/Spatial/NCHUC8.shp'))
 
 #Reveal the columns
-
+st_crs(huc8_sf)
 
 #Check the CRS
-
+st_crs(huc8_sf)
 
 #Examine some records
 head(huc8_sf)
 
 #View the data as a map, colored by the acreage in each
+mapView(huc8_sf, zcol = "ACRES")
 
-
-
+ggplot(data=huc8_sf) +
+  geom_sf(aes(fill = ACRES)) +
+  scale_fill_viridis_c()
 
 ```
 
@@ -142,12 +144,20 @@ head(huc8_sf)
 
 ```{r Select the Upper Neuse HUC 8}
 #Read the shapefile into an sf dataframe
-
+neuse_sf<- st_read(here('EDE_Fall2023/Data/Spatial/NCHUC8.shp')) %>% 
+  filter(SUBBASIN == "Upper Neuse") #Filter 
 
 
 #Create a map
+mapView(huc8_sf, col.regions = 'orange', layer.name='HUC 8') +
+  mapView(neuse_sf, col.regions = 'purple')
 
+mapView(huc8_sf, col.regions = 'orange') |
+mapView(neuse_sf, col.regions = 'purple')
 
+ggplot() +
+  geom_sf(data=huc8_sf, fill='orange') +
+  geom_sf(data=neuse_sf, fill='purple')
 
 
 ```
@@ -169,7 +179,7 @@ If you have difficulty, the link you want is: - <https://services1.arcgis.com/Hp
 This a link to a spatial dataset in GeoJSON format. Now let's read this dataset in and explore it:
 
 ```{r load.geojson.data}
-powerplants_sf <- st_read('https://opendata.arcgis.com/datasets/ee0263bd105d41599be22d46107341c3_0.geojson')
+powerplants_sf <- st_read('https://services1.arcgis.com/Hp6G80Pky0om7QvQ/arcgis/rest/services/Plants_gdb/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson')
 
 #Reveal the field names
 colnames(powerplants_sf)
@@ -294,14 +304,19 @@ mapview(state_sf)
 
 ```{r Aggregate the HUC data on an attribute, saving as huc2_sf}
 #List the unique values in the DWQ_Basin field
-
+unique(huc8_sf$DWQ_Basin)
 
 
 #Summarize on DWQ Basin value
-
+huc2_sf <- huc8_sf %>% 
+  group_by(DWQ_Basin) %>% 
+  summarise(
+    ACRES = sum(ACRES),
+    SQ_MILES = sum(SQ_MILES)
+  )
 
 #Map the data
-
+mapview(huc2_sf)
 
 ```
 
@@ -361,6 +376,13 @@ neuse_intersect_1 <- counties_sf_utm[neuse_sf,]
 neuse_intersect_2 <- counties_sf_utm %>% 
   filter(st_intersects(x = ., y = neuse_sf, sparse = FALSE))
 
+neuse_intersect_3 <- counties_sf_utm %>% 
+  st_filter(x = ., y = neuse_sf, sparse = FALSE)
+
+neuse_intersect_4 <- counties_sf_utm %>% 
+  filter(st_is_within_distance( x=., y = neuse_sf, dist=100000, sparse = FALSE))
+test <- st_is_within_distance( x=counties_sf_utm, y = neuse_sf, dist=100000, sparse = FALSE)
+
 #View the result
 myMap + mapview(neuse_intersect_2, alpha.regions = 0)
 
@@ -381,7 +403,8 @@ mapview(neuse_counties_sf, zcol='Area_m2')
 
 ```{r EXERCISE: Clipping}
 #Select the Triangle County from the 
-
+tri_sf <- counties_sf_utm %>% 
+  filter(NAME %in% c('Chatham', 'Durham', 'Orange', 'Wake'))
 
   
 #Grab the intersecting HUC_8s
