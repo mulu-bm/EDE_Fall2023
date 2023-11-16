@@ -256,5 +256,6 @@ asheville2010s.plot
 
 Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
 
->Answer: Yes. Based on the plot of maximum daily withdrawal in Asheville by month for the years 2010 - 2021, there has been an upward trend in water usage over time.
+>Answer: Yes. Based on the plot of maximum daily withdrawal in Asheville by month for the
+years 2010 - 2021, water usage declined slightly in the years preceding 2015 but has been on an upward trend in the subsequent years.
 >
